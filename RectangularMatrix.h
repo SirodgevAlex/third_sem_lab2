@@ -280,6 +280,7 @@ public:
     }
 };
 
+
 template<typename T>
 RectangularMatrix<T> operator+(RectangularMatrix<T> matrix1, RectangularMatrix<T> matrix2) {
     if (matrix1.GetLength() != matrix2.GetLength()) throw WRONG_SIZE_MESSAGE;
