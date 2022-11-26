@@ -10,8 +10,8 @@ using namespace std;
 template<class T>
 class Element {
 private:
-    T Height = 0;
-    T Width = 0;
+    int Height = 0;
+    int Width = 0;
     RectangularMatrix<T> Matrix;
     T Weight = 0;
     T Money = 0;
@@ -30,6 +30,9 @@ public:
 //            }
 //        }
 //    }
+
+//    friend std::ostream& operator<< (std::ostream &out, const Element<T> &El);
+//    friend std::istream& operator>> (std::istream &in, Element<T> &El);
 
     Element() {
         Matrix = RectangularMatrix<T>();
@@ -53,7 +56,7 @@ public:
         this->Volume = 0;
     }
 
-    void Read() {
+/*    void Read() {
         cout << "Input height please\n";
         cin >> this->Height;
         cout << "Input Width please\n";
@@ -67,6 +70,7 @@ public:
         cout << "Input volume of your backpack please\n";
         cin >> this->Volume;
     }
+    */
 
     void Print() {
         cout << "Height is " << this->Height << '\n';
@@ -107,11 +111,6 @@ public:
         int n = this->Height;
         int m = this->Width;
         this->Matrix = RectangularMatrix<T>(Matrix, n, m);
-//        for (int i = 0; i < n; i++) {
-//            for (int g = 0; g < m; g++) {
-//                cout << this->Matrix.Get(i * m + g) << ' ';
-//            }
-//        }
     }
 
     void SetOneValueInMatrix(int index, T value) {
@@ -163,7 +162,7 @@ public:
     Element<T> *ReadArray(Element<T> *Elements, int Size) {
         Elements = new Element<T>[Size];
         for (int i = 0; i < Size; i++) {
-            Elements[i].Read();
+            cin >> Elements[i];
         }
         return Elements;
     }
@@ -173,17 +172,6 @@ public:
             Elements[i].Print();
         }
     }
-
-    //    istream& operator>>(istream &in) {
-//        cout << "Input height please\n";
-//        cin >> this->Height;
-//        cout << "Input Width please\n";
-//        cin >> this->Width;
-//        this->Matrix = RectangularMatrix<T>(this->Height, this->Weight);
-//        this->Matrix.ReadRectangularMatrix();
-//        cout << "Input weight please\n";
-//        cin >> this->Weight;
-//    }
 
     Element<T> operator =(Element<T> El) {
         //El.Matrix.Print();
@@ -196,6 +184,7 @@ public:
         this->Matrix = RectangularMatrix<T>(El.Matrix, this->Height, this->Width);
         return *this;
     }
+
 
 };
 
@@ -215,19 +204,31 @@ bool operator ==(Element<T> Element1, Element<T> Element2) {
 }
 
 template<typename T>
-istream& operator >>(istream& in, Element<T> El) {
+istream& operator >>(istream& in, Element<T> &El) {
     cout << "Input height please\n";
-    cin >> El.Height;
+    int Height;
+    in >> Height;
+    El.SetHeight(Height);
     cout << "Input Width please\n";
-    cin >> El.Width;
-    El.Matrix = RectangularMatrix<T>(El.Height, El.Width);
-    El.Matrix.ReadRectangularMatrix();
+    int Width;
+    in >> Width;
+    El.SetWidth(Width);
+    RectangularMatrix<T> Matrix = RectangularMatrix<T>(Height, Width);
+    cin >> Matrix;
+    El.SetMatrix(Matrix);
     cout << "Input weight please\n";
-    cin >> El.Weight;
+    T Weight;
+    in >> Weight;
+    El.SetWeight(Weight);
     cout << "Input amount of money please\n";
-    cin >> El.Money;
+    T Money;
+    in >> Money;
+    El.SetMoney(Money);
     cout << "Input volume of your backpack please\n";
-    cin >> El.Volume;
+    T Volume;
+    in >> Volume;
+    El.SetVolume(Volume);
+    return in;
 }
 
 //template<typename T>

@@ -296,3 +296,17 @@ RectangularMatrix<T> operator+(RectangularMatrix<T> matrix1, RectangularMatrix<T
     return matrix3;
 }
 
+template<typename T>
+istream& operator >>(istream& in, RectangularMatrix<T> &Matrix) {
+    cout << "input please data\n";
+    for (int i = 0; i < Matrix.GetStringsCount(); i++) {
+        for (int g = 0; g < Matrix.GetColumnsCount(); g++) {
+            T Data;
+            in >> Data;
+            //cout << Data << '\n';
+            Matrix.Set(Data, i * Matrix.GetColumnsCount() + g);
+            //cout << this->matrix->Get(i * this->m + g) << ' ';
+        }
+    }
+    return in;
+}
