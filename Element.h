@@ -48,12 +48,12 @@ public:
     }
 
     void DelElement() {
-        this->Matrix.DelRectangularMatrix();
         this->Height = 0;
         this->Width = 0;
         this->Weight = 0;
         this->Money = 0;
         this->Volume = 0;
+        this->Matrix.~RectangularMatrix();
     }
 
 /*    void Read() {
@@ -110,6 +110,7 @@ public:
     void SetMatrix(RectangularMatrix<T> Matrix) {
         int n = this->Height;
         int m = this->Width;
+        //if (this->Matrix.GetLength() != 0) delete Matrix;
         this->Matrix = RectangularMatrix<T>(Matrix, n, m);
     }
 
@@ -185,7 +186,43 @@ public:
         return *this;
     }
 
+    Element<T> Rotate() {
+        Element<T> NewElement;
+        NewElement.Weight = this->Weight;
+        NewElement.Money = this->Money;
+        NewElement.Volume = this->Volume;
+        ArraySequence<T> *seq = new ArraySequence<T>();
+        for (int g = 0; g < this->Width; g++) {
+            for (int i = 0; i < this->Height; i++) {
+                seq->Append(this->Matrix.Get(i * this->Width + g));
+            }
+        }
+        NewElement.Height = this->Width;
+        NewElement.Width = this->Height;
+        NewElement.Matrix = RectangularMatrix<T>(this->Width, this->Height);
+        int count = 0;
+        for (int i = 0; i < this->Width; i++) {
+            for (int g = this->Height - 1; g > -1; g--) {
+                NewElement.Matrix.Set(seq->Get(count), i * this->Height + g);
+                count++;
+            }
+        }
+        delete seq;
+        return NewElement;
+    }
 
+    void AlternativeWiew(Element<T> Backpack, ArraySequence<int> *sequence) {
+//        if (sequence.Get(0) == 0) {
+//            for (int i = 0; i < Backpack.Height; i++) {
+//                for (int g = 0; g < Backpack.Width; g++) {
+//                    this->Matrix.Set(Backpack.Matrix. - this->Matrix.Get(i * this->Height + g))
+//                }
+//            }
+//        }
+        if (sequence->Get(1) == -1) this->Weight = Backpack.Weight - this->Weight;
+        if (sequence->Get(2) == -1) this->Money = Backpack.Money - this->Money;
+        if (sequence->Get(3) == -1) this->Volume = Backpack.Volume - this->Volume;
+    }
 };
 
 template<typename T>
@@ -229,6 +266,18 @@ istream& operator >>(istream& in, Element<T> &El) {
     in >> Volume;
     El.SetVolume(Volume);
     return in;
+}
+
+template<typename T>
+ostream& operator <<(ostream &out, Element<T> &El) {
+    out << "Your element looks like this: \n";
+    out << "Height is " << El.GetHeight() << '\n';
+    out << "Width is " << El.GetWidth() << '\n';
+    (El.GetMatrix()).PrintRectangularMatrix();
+    out << "Weight is " << El.GetWeight() << '\n';
+    out << "Money is " << El.GetMoney() << '\n';
+    out << "Volume is " << El.GetVolume() << '\n';
+    return out;
 }
 
 //template<typename T>

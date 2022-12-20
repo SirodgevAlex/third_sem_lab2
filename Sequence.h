@@ -75,6 +75,54 @@ public:
         this->size = size;
     }
 
+    ArraySequence<int> *SequenceABackpack() {
+        ArraySequence<int> *Sequence = new ArraySequence<int>(4);
+        Sequence->Fill(0);
+        Sequence->Set(-1, 3);
+        Sequence->Set(-1, 2);
+        return Sequence;
+    }
+
+    ArraySequence<int> *SequenceBBackpack() {
+        ArraySequence<int> *Sequence = new ArraySequence<int>(4);
+        Sequence->Fill(0);
+        Sequence->Set(-1, 3);
+        Sequence->Set(-1, 2);
+        Sequence->Set(-1, 1);
+        return Sequence;
+    }
+
+    ArraySequence<int> *SequenceCBackpack() {
+        ArraySequence<int> *Sequence = new ArraySequence<int>(4);
+        Sequence->Fill(0);
+        Sequence->Set(-1, 0);
+        Sequence->Set(-1, 3);
+        Sequence->Set(-1, 1);
+        Sequence->Set(-1, 2);
+        return Sequence;
+    }
+
+    ArraySequence<int> *SequenceEBackpack() {
+        ArraySequence<int> *Sequence = new ArraySequence<int>(4);
+        Sequence->Fill(0);
+        Sequence->Set(-1, 0);
+        Sequence->Set(-1, 3);
+        Sequence->Set(-1, 1);
+        Sequence->Set(-1, 2);
+        return Sequence;
+    }
+
+    ArraySequence<int> *SequenceCustomBackpack() {
+        CustomCheckBackpackMenu();
+        ArraySequence<int> *Sequence = new ArraySequence<int>(4);
+        for (int i = 0; i < 4; i++) {
+            int a;
+            cin >> a;
+            Sequence->Set(a, i);
+        }
+        return Sequence;
+    }
+
     virtual ~ArraySequence(){
         delete this->data;
         this->size = 0;
@@ -158,6 +206,12 @@ public:
         DynamicArray<T> *Sequence = new DynamicArray<T>(NewArray, this->size + 1);
         this->data = Sequence;
         this->size++;
+    }
+
+    void Fill(int value) {
+        for (int i = 0; i < GetLength(); i++) {
+            this->data->Set(value, i);
+        }
     }
 
     void Print() {

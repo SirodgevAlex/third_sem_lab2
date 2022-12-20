@@ -12,7 +12,7 @@ void Mainfunc() {
     Element<T> Rucksack;
     Element<T> *Elements;
     int CountOfElements = 0;
-    int Command;
+    int Command = -1;
     //Sequence<Element<T>> *Elements = new ArraySequence<Element<T>>();
     while (Command != 0) {
         CommandMenu();
@@ -26,32 +26,53 @@ void Mainfunc() {
             Elements = Elements->ReadArray(Elements, CountOfElements);
             //*Elements = new ArraySequence<Element<T>>();
         } else if (Command == 3) {
-            Rucksack.Print();
+            cout << Rucksack;
         } else if (Command == 4) {
             Elements->PrintArray(Elements, CountOfElements);
         } else if (Command == 5) {
             Tree<T> *tree = new Tree<T>();
-            tree->Solve(Rucksack, Elements, CountOfElements, CheckBackpackA);
-            tree->GetAnswer(MaxA).Print();
-            tree->DelTree(tree->Get1PtrRoot());
+            ArraySequence<int> *sequence = new ArraySequence<int>;
+            sequence = sequence->SequenceABackpack();
+            tree->Solve(Rucksack, Elements, CountOfElements, sequence, CheckBackpackA);
+            Element<T> Answer = tree->GetAnswer(MaxA, Rucksack);
+            Answer.AlternativeWiew(Rucksack, sequence);
+            Answer.Print();
         } else if (Command == 6) {
             Tree<T> *tree = new Tree<T>();
-            tree->Solve(Rucksack, Elements, CountOfElements, CheckBackpackB);
-            tree->GetAnswer(MaxB).Print();
+            ArraySequence<int> *sequence = new ArraySequence<int>;
+            sequence = sequence->SequenceBBackpack();
+            tree->Solve(Rucksack, Elements, CountOfElements, sequence, CheckBackpackB);
+            Element<T> Answer = tree->GetAnswer(MaxB, Rucksack);
+            Answer.AlternativeWiew(Rucksack, sequence);
+            Answer.Print();
             //tree->DelTree(tree->Get1PtrRoot());
         } else if (Command == 7) {
             Tree<T> *tree = new Tree<T>();
-            tree->Solve(Rucksack, Elements, CountOfElements, CheckBackpackC);
-            tree->GetAnswer(MaxC).Print();
+            ArraySequence<int> *sequence = new ArraySequence<int>;
+            sequence = sequence->SequenceCBackpack();
+            tree->Solve(Rucksack, Elements, CountOfElements, sequence, CheckBackpackC);
+            Element<T> Answer = tree->GetAnswer(MaxC, Rucksack);
+            Answer.AlternativeWiew(Rucksack, sequence);
+            Answer.Print();
             //tree->DelTree(tree->Get1PtrRoot());
         } else if (Command == 8) {
             Tree<T> *tree = new Tree<T>();
-            tree->Solve(Rucksack, Elements, CountOfElements, CheckBackpackE);
-            tree->GetAnswer(MaxE).Print();
+            ArraySequence<int> *sequence = new ArraySequence<int>;
+            sequence = sequence->SequenceEBackpack();
+            tree->Solve(Rucksack, Elements, CountOfElements, sequence, CheckBackpackE);
+            tree->GetAnswer(MaxE, Rucksack).Print();
         } else if (Command == 9) {
             Test();
+        } else if (Command == 10) {
+            ArraySequence<int> *sequence = new ArraySequence<int>;
+            sequence = sequence->SequenceCustomBackpack();
+            Tree<T> *tree = new Tree<T>();
+            tree->Solve(Rucksack, Elements, CountOfElements, sequence, CustomCheckBackpack);
+            Element<T> Answer = tree->GetAnswer(MaxCustom, Rucksack);
+            Answer.AlternativeWiew(Rucksack, sequence);
+            Answer.Print();
         } else if (Command == 0) {
-            Elements->DelElement();
+            //delete Elements;
         }
     }
 }

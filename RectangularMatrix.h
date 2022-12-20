@@ -44,10 +44,10 @@ public:
     }
 
     void DelRectangularMatrix() {
+        delete[] this->matrix;
         this->size = 0;
         this->n = 0;
         this->m = 0;
-        delete this->matrix;
     }
 
     /*RectangularMatrix(Sequence<T> *sequence) { // не можем найти размеры стобцов и строк
@@ -76,7 +76,7 @@ public:
     }
 
     RectangularMatrix(RectangularMatrix<T> Items, int n, int m) {
-        DelRectangularMatrix();
+        RectangularMatrix();
         this->matrix = new T[n * m];
         for (int i = 0; i < n; i++) {
             for (int g = 0; g < m; g++) {
@@ -310,4 +310,15 @@ istream& operator >>(istream& in, RectangularMatrix<T> &Matrix) {
         }
     }
     return in;
+}
+
+template<typename T>
+ostream& operator <<(ostream& out, RectangularMatrix<T> &Matrix) {
+    for (int i = 0; i < Matrix.GetStringsCount(); i++) {
+        for (int g = 0; g < Matrix.GetColumnsCount(); g++) {
+            out << Matrix.Get(i * Matrix.GetColumnsCount() + g) << ' ';
+        }
+        out << '\n';
+    }
+    return out;
 }

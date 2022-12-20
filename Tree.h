@@ -2,60 +2,63 @@
 
 #include <iostream>
 #include "Element.h"
+#include "Menu.h"
 
 using namespace std;
 
+
 template<class T>
-bool CheckBackpack(Element<T> CurrentBackpack) {
+bool CheckBackpack(Element<T> CurrentBackpack, ArraySequence<int> *Sequence) {
     int n = CurrentBackpack.GetHeight();
     int m = CurrentBackpack.GetWidth();
-    for (int i = 0; i < n; i++) {
-        for (int g = 0; g < m; g++) {
-            if (CurrentBackpack.GetDataFromMatrix(i * m + g) > 1) return false;
+    if (Sequence->Get(0) != -1) {
+        for (int i = 0; i < n; i++) {
+            for (int g = 0; g < m; g++) {
+                if (CurrentBackpack.GetDataFromMatrix(i * m + g) > 1) return false;
+            }
         }
     }
 //        if (n < CurrentElement.GetHeight()) return false;
 //        if (m < CurrentElement.GetWidth()) return false;
-    if (CurrentBackpack.GetWeight() < 0) return false;
-    if (CurrentBackpack.GetMoney() < 0) return false;
-    if (CurrentBackpack.GetVolume() < 0) return false;
-    return true;
-    //функция для проверки существования данного рюкзака
-}
-
-template<class T>
-bool CheckBackpackA(Element<T> CurrentBackpack) {
-    if (CurrentBackpack.GetVolume() < 0) return false;
-    return true;
-    //функция для проверки существования данного рюкзака
-}
-
-template<class T>
-bool CheckBackpackB(Element<T> CurrentBackpack) {
-    if (CurrentBackpack.GetVolume() < 0) return false;
-    if (CurrentBackpack.GetWeight() < 0) return false;
-    return true;
-    //функция для проверки существования данного рюкзака
-}
-
-template<class T>
-bool CheckBackpackC(Element<T> CurrentBackpack) {
-    int n = CurrentBackpack.GetHeight();
-    int m = CurrentBackpack.GetWidth();
-    for (int i = 0; i < n; i++) {
-        for (int g = 0; g < m; g++) {
-            if (CurrentBackpack.GetDataFromMatrix(i * m + g) > 1) return false;
-        }
+    if (Sequence->Get(1) != -1) {
+        if (CurrentBackpack.GetWeight() < 0) return false;
     }
-    if (CurrentBackpack.GetVolume() < 0) return false;
-    if (CurrentBackpack.GetWeight() < 0) return false;
+    if (Sequence->Get(2) != -1) {
+        if (CurrentBackpack.GetMoney() < 0) return false;
+    }
+    if (Sequence->Get(3) != -1) {
+        if (CurrentBackpack.GetVolume() < 0) return false;
+    }
     return true;
     //функция для проверки существования данного рюкзака
 }
 
 template<class T>
-bool CheckBackpackE(Element<T> CurrentBackpack) {
-    return CheckBackpackC(CurrentBackpack);
+bool CheckBackpackA(Element<T> CurrentBackpack, ArraySequence<int> *Sequence) {
+    return CheckBackpack(CurrentBackpack, Sequence);
+    //функция для проверки существования данного рюкзака
+}
+
+template<class T>
+bool CheckBackpackB(Element<T> CurrentBackpack, ArraySequence<int> *Sequence) {
+    return CheckBackpack(CurrentBackpack, Sequence);
+    //функция для проверки существования данного рюкзака
+}
+
+template<class T>
+bool CheckBackpackC(Element<T> CurrentBackpack, ArraySequence<int> *Sequence) {
+    return CheckBackpack(CurrentBackpack, Sequence);
+    //функция для проверки существования данного рюкзака
+}
+
+template<class T>
+bool CheckBackpackE(Element<T> CurrentBackpack, ArraySequence<int> *Sequence) {
+    return CheckBackpackC(CurrentBackpack, Sequence);
+}
+
+template<class T>
+bool CustomCheckBackpack(Element<T> CurrentBackpack, ArraySequence<int> *Sequence) {
+    return CheckBackpack(CurrentBackpack, Sequence);
 }
 
 template<class T>
@@ -86,6 +89,20 @@ Element<T> MaxE(Element<T> element1, Element<T> element2) {
     else {
         if (element1.GetVolume() < element2.GetVolume()) return element1;
         else return element2;
+    }
+}
+
+template<class T>
+Element<T> MaxCustom(Element<T> element1, Element<T> element2) {
+    if (element1.GetMoney() > element2.GetMoney()) return element1;
+    else if (element1.GetMoney() < element2.GetMoney()) return element2;
+    else {
+        if (element1.GetVolume() > element2.GetVolume()) return element1;
+        else if (element1.GetVolume() < element2.GetVolume()) return element2;
+        else {
+            if (element1.GetWeight() > element2.GetWeight()) return element1;
+            else if (element1.GetWeight() < element2.GetWeight()) return element2;
+        }
     }
 }
 
@@ -139,9 +156,6 @@ public:
         int DownBorderOfCurrentElement = UpBorderOfCurrentElement + CurrentElement.GetHeight();
         int LeftBorderOfCurrentElement = NumberOfColumn;
         int RightBorderOfCurrentElement = LeftBorderOfCurrentElement + CurrentElement.GetWidth();
-        cout << "//////////////////\n";
-        CurrentBackpack.Print();
-        CurrentElement.Print();
         for (int i = UpBorderOfCurrentElement; i < DownBorderOfCurrentElement; i++) {
             for (int g = LeftBorderOfCurrentElement; g < RightBorderOfCurrentElement; g++) {
                 //cout << i << ' ' << g << '_';
@@ -153,8 +167,6 @@ public:
         CurrentBackpack.SetWeight(CurrentBackpack.GetWeight() - CurrentElement.GetWeight());
         CurrentBackpack.SetMoney(CurrentBackpack.GetMoney() - CurrentElement.GetMoney());
         CurrentBackpack.SetVolume(CurrentBackpack.GetVolume() - CurrentElement.GetVolume());
-        CurrentBackpack.Print();
-        cout << "IIIIIIIIIIIIIIIIIII\n";
         return CurrentBackpack;
         //функция, которая вставит в рюкзак данных элемент
     }
@@ -182,17 +194,14 @@ public:
         //функция для проверки существования данного рюкзака
     }
 
-    void CreateBackpackWithThisElement(Node *ptr, Element<T> CurrentBackpack, Element<T> CurrentElement, int NumberOfElement, bool (*check)(Element<T>)) {
-        //Element<T> CurrentBackpack = (*ptr)->CurrentBackpack;
-        //CurrentBackpack.Print();
+    void CreateBackpackWithThisElement(Node *ptr, Element<T> CurrentBackpack, Element<T> CurrentElement, int NumberOfElement, ArraySequence<int> *Sequence, bool (*check)(Element<T>, ArraySequence<int> *)) {
         int n = CurrentBackpack.GetHeight() - CurrentElement.GetHeight() + 1;
         int m = CurrentBackpack.GetWidth() - CurrentElement.GetWidth() + 1;
         for (int i = 0; i < n; i++) {
             for (int g = 0; g < m; g++) {
                 Element<T> ReturningBackpack = Element<T>(CurrentBackpack);
                 ReturningBackpack = UseElementInBackpack(ReturningBackpack, CurrentElement, i, g);
-                if (check(ReturningBackpack) == true) {
-                    cout << NumberOfElement << '\n';
+                if (check(ReturningBackpack, Sequence) == true) {
                     Add(ptr, ReturningBackpack, (ptr)->UsedElements, NumberOfElement); //дописать
                 }
             }
@@ -213,8 +222,6 @@ public:
         NewPtr->UsedElements->Append(NumberOfElement);
         NewPtr->CurrentBackpack = value;
         (ptr)->Child->Append(NewPtr);
-        //cout << ptr << ' ' << (ptr)->Child->GetLength() << '\n';
-        //value.Print();
         //функция, которая создает версия данного рюкзака с текущим элементом
     }
 
@@ -240,7 +247,7 @@ public:
         return ptr->CurrentBackpack;
     }
 
-    void RecursiveGo(Node *ptr, Element<T> CurrentElement, int NumberOfElement, bool (*check)(Element<T>)) {
+    void RecursiveGo(Node *ptr, Element<T> CurrentElement, int NumberOfElement, ArraySequence<int> *Sequence, bool (*check)(Element<T>, ArraySequence<int> *)) {
         if (ptr == nullptr) {
             return;
         }
@@ -248,35 +255,22 @@ public:
         if (ptr != nullptr) {
             if ((ptr)->UsedElements->GetSize() != 0) {
                 if ((ptr)->UsedElements->Get((ptr)->UsedElements->GetSize() - 1) != NumberOfElement) {
-                    cout << "YA TUT : " << NumberOfElement << ' ' << (ptr)->UsedElements->Get((ptr)->UsedElements->GetSize() - 1) << '\n';
-                    ptr->CurrentBackpack.Print();
-                    CreateBackpackWithThisElement(ptr, (ptr)->CurrentBackpack, CurrentElement, NumberOfElement, check);
+                    CreateBackpackWithThisElement(ptr, (ptr)->CurrentBackpack, CurrentElement, NumberOfElement, Sequence, check);
                 }
             } else {
-                CreateBackpackWithThisElement(ptr, (ptr)->CurrentBackpack, CurrentElement, NumberOfElement, check);
+                CreateBackpackWithThisElement(ptr, (ptr)->CurrentBackpack, CurrentElement, NumberOfElement, Sequence, check);
             }
         }
         int size = ptr->Child->GetSize();
         for (int i = 0; i < size; i++) {
-//            cout << ptr->Child->Get(i) << ' ';
-//            for (int g = 0; g < ptr->Child->Get(i)->UsedElements->GetLength(); g++) {
-//                cout << ptr->Child->Get(i)->UsedElements->Get(g) << ' ';
-//            }
-            //cout << '\n';
-            //CurrentElement.Print();
-            RecursiveGo(GetPtrChild(ptr, i), CurrentElement, NumberOfElement, check);
+            RecursiveGo(GetPtrChild(ptr, i), CurrentElement, NumberOfElement, Sequence, check);
         }
         // функция, которая полностью проходит по дереву и создает все корректнвые версии рюкзаков с данным элементом
     }
 
     void RecursiveFind(Node *ptr, Element<T> &Answer, Element<T> (* compare)(Element<T>, Element<T>)) {
         //ptr->CurrentBackpack.Print();
-        cout << "Aaaaaaaaaaa\n";
-        Answer.Print();
-        ptr->CurrentBackpack.Print();
         Answer = MaxA(Answer, ptr->CurrentBackpack);
-        Answer.Print();
-        cout << "BBBBBBBBBBBB\n";
         int size = ptr->Child->GetSize();
         for (int i = 0; i < size; i++) {
             RecursiveFind(ptr->Child->Get(i), Answer, compare);
@@ -289,15 +283,15 @@ public:
         //по сути не нужна)
     }
 
-    void Solve(Element<T> CurrentBackpack, Element<T> *Elements, int CountOfElements, bool (*check)(Element<T>)) {
+    void Solve(Element<T> CurrentBackpack, Element<T> *Elements, int CountOfElements, ArraySequence<int> *Sequence, bool (*check)(Element<T>, ArraySequence<int> *)) {
         AddRoot(CurrentBackpack);
         //cout << CountOfElements;
         for (int i = 0; i < CountOfElements; i++) {
-            RecursiveGo(this->Get1PtrRoot(), Elements[i], i, check);
+            RecursiveGo(this->Get1PtrRoot(), Elements[i], i, Sequence, check);
         }
     }
 
-    Element<T> GetAnswer(Element<T> (* compare)(Element<T>, Element<T>)) {
+    Element<T> GetAnswer(Element<T> (* compare)(Element<T>, Element<T>), Element<T> Backpack) {
         Node *ptr = Get1PtrRoot();
         Element<T> Answer = ptr->CurrentBackpack;
         RecursiveFind(ptr, Answer, compare);

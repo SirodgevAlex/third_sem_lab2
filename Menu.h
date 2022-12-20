@@ -22,5 +22,16 @@ void CommandMenu() {
     cout << "7 - Maximize sum of costs and sum of volumes, sum of volumes <= volume of backpack and sum of weights <= weight of backpack\n";
     cout << "8 - Maximize sum of costs, minimize sum of weights, sum of volumes <= volume of backpack and sum of weights <= weight of backpack\n";
     cout << "9 - Test\n";
+    cout << "10 - Maximize all\n";
     cout << "0 - Stop\n";
+}
+
+void CustomCheckBackpackMenu() {
+    cout << "-1 - without supremum\n";
+    cout << "0 - with supremum\n";
+    cout << "input please 4 numbers:\n";
+    cout << "the first one for form\n";
+    cout << "the second one for weight\n";
+    cout << "the third one for money\n";
+    cout << "the fourth one for volume\n";
 }
